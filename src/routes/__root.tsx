@@ -1,6 +1,9 @@
 import {
+  HeadContent,
+  Link,
   Outlet,
-  createRootRouteWithContext,
+  Scripts,
+  createRootRoute,
   useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
@@ -9,18 +12,32 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { NotFound } from "@/components/not-found";
 import { Providers } from "../providers";
-import type { trpc } from "../trpc";
+import appCss from "../styles.css?url";
 
-export interface RouterAppContext {
-  trpc: typeof trpc;
-}
-
-export const Route = createRootRouteWithContext<RouterAppContext>()({
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0" },
+      { title: "Vite App" },
+    ],
+    links: [{ rel: "stylesheet", href: appCss }],
+  }),
   component: RootComponent,
+  notFoundComponent: NotFound,
 });
 
 function RootComponent() {
+  return (
+    <RootDocument>
+      <RootLayout />
+    </RootDocument>
+  );
+}
+
+function RootLayout() {
   const isFetching = useRouterState({ select: (s) => s.isLoading });
 
   return (
@@ -31,7 +48,9 @@ function RootComponent() {
         <AppBar position="static">
           <Toolbar sx={{ gap: 2 }}>
             <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
-              Get the vibe
+              <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
+                Get the vibe
+              </Link>
             </Typography>
             <Box
               sx={{
@@ -43,11 +62,28 @@ function RootComponent() {
             </Box>
           </Toolbar>
         </AppBar>
-        <Box component="main" sx={{ flex: 1, display: "flex" }}>
+        <Box
+          component="main"
+          sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+        >
           <Outlet />
         </Box>
       </Box>
       <TanStackRouterDevtools position="bottom-right" />
     </Providers>
+  );
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
   );
 }

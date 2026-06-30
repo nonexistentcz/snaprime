@@ -1,0 +1,20 @@
+CREATE TABLE "brands" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" text,
+	"logo_url" text,
+	"tone" text,
+	"slogan" text,
+	"target_audience" text,
+	"industry" text,
+	"values" text,
+	"language" text,
+	"palette_primary" text,
+	"palette_secondary" text,
+	"palette_tertiary" text,
+	"social_instagram" text,
+	"social_facebook" text,
+	"social_twitter" text,
+	"social_linkedin" text,
+	"social_tiktok" text,
+	"social_youtube" text
+);

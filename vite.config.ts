@@ -1,54 +1,25 @@
 import url from 'node:url'
 import path from 'node:path'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import type { BuildEnvironmentOptions } from 'vite'
+import viteReact from '@vitejs/plugin-react'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import tailwindcss from '@tailwindcss/vite'
+import { cloudflare } from '@cloudflare/vite-plugin'
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Client Build Configuration
-const clientBuildConfig: BuildEnvironmentOptions = {
-  outDir: 'dist/client',
-  emitAssets: true,
-  copyPublicDir: true,
-  emptyOutDir: true,
-}
-
-// Server Build Configuration
-const serverBuildConfig: BuildEnvironmentOptions = {
-  ssr: true,
-  outDir: 'dist/server',
-  copyPublicDir: false,
-  emptyOutDir: true,
-  rolldownOptions: {
-    input: path.resolve(__dirname, 'src/server/server.ts'),
-    output: {
-      entryFileNames: '[name].js',
-      chunkFileNames: 'assets/[name]-[hash].js',
-      assetFileNames: 'assets/[name]-[hash][extname]',
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    tailwindcss(),
+    tanstackStart(),
+    viteReact(),
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
     },
   },
-}
-
-// https://vitejs.dev/config/
-export default defineConfig((configEnv) => {
-  return {
-    plugins: [
-      tailwindcss(),
-      tanstackRouter({
-        target: 'react',
-        autoCodeSplitting: true,
-      }),
-      react(),
-    ],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src'),
-      },
-    },
-    build: configEnv.mode === 'server' ? serverBuildConfig : clientBuildConfig,
-  }
 })

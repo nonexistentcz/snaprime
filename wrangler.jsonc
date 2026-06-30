@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "snaprime",
+  "compatibility_date": "2026-06-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "browser": {
+    "binding": "MYBROWSER"
+  },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "baf1aa127cc642e492e910dd3fb067b8"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
